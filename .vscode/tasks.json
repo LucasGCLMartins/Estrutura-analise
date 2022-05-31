@@ -1,0 +1,23 @@
+{
+    "version": "2.0.0",
+    "tasks": [
+        {
+            "label": "build myfile",
+            "type": "shell",
+            "command": "g++",
+            "args": [
+                "-std=c++14",
+                "-g",
+                "-o",
+                "main.exe",
+                "main.cpp",
+                "${workspaceFolder}/${workspaceFolderBasename}.cpp",   // Caso queira usar modularizacao
+                "${workspaceFolder}/${workspaceFolderBasename}.h"      // descomentar essas duas linhas
+            ],
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            }
+        }
+    ]
+}
