@@ -57,11 +57,9 @@ void PrintListInfo(Node *node)
  }
 }
 
-Node* ReadFile()
-{
-	Node node;
-	Node* list = node.Create();
+Node* ReadFile(Node* list){
 
+	Node node;
 	string fname;
 	fname = "bibliografia.csv";
 	
@@ -83,25 +81,61 @@ Node* ReadFile()
 				node.Insert(&list, row[0], row[1], row[2], row[3], row[4], row[5], row[6], row[7], row[8]); 
 				
 			content.push_back(row);
-			//cout << "Linha: " << line << endl;
-			//node.Insert(&list, stoi(row[0]));
 
 		}
+		cout<< list->Disciplina<<endl;
 		return list;
 	}
 	else
 		cout<<"Could not open the file\n";
-	
+}
 
+void displaymenu()
+{ 
+	cout<<"===================================================== \n";
+	cout<<"\t \t Menu: \n";
+	cout<<"===================================================== \n";
+	cout<<" 1.Ler dados\n";
+	cout<<" 2.Exibir dados\n";
+	cout<<" 8.Encerrar \n";
+}
+
+void EscolhaDois(Node *list)
+{
+	PrintListInfo(list);
 }
 
 int main()
 { 
- Node node;
- setlocale(LC_CTYPE, "Portuguese");
- cout << "*** Lista Ligada/Encadeada (Linked List) ***\n";
+	Node node;
+	Node* list = node.Create();
 
- Node* list = ReadFile();
- PrintListInfo(list);
+	setlocale(LC_CTYPE, "Portuguese");
+	int yourchoice;
+	string confirm;
+
+	displaymenu();
+
+	do
+	{ 
+		cout<<"Digite sua escolha(1-5):";
+		cin>>yourchoice;
+		
+	switch (yourchoice)
+	{
+		case 1:
+			list = ReadFile(list);
+			break;
+		case 2:
+			EscolhaDois(list);
+			break;
+		case 8:
+			cout<< "VLW IRMAO \n";
+			break;
+		default: cout<<"invalid"; break;
+	}
+	} while (yourchoice != 8);
+	
+
 
 }
