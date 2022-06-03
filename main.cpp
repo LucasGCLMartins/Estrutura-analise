@@ -18,19 +18,6 @@ void Print(Node *node)
 	}
 	cout<<endl;
 }
-void GetHead(Node *node)
-{
-	cout<<"Head: "<<node->data<<endl;
-}
-
-void GetTail(Node *node)
-{
-	while (node->next != NULL)
-	{
-		node = node->next;
-	}
-	cout<<"Tail: "<<node->data<<endl;
-}
 
 bool isEmpty(Node *node)
 {
@@ -55,6 +42,17 @@ void PrintListInfo(Node *node)
  cout << "Lista: ";
  Print(node);
  }
+}
+
+int Size(Node *node)
+{
+	int cont = 0;
+	while (node != NULL)
+	{
+		cont++;
+		node = node->next;
+	}
+	return cont-1;
 }
 
 Node* ReadFile(Node* list){
@@ -83,11 +81,10 @@ Node* ReadFile(Node* list){
 			content.push_back(row);
 
 		}
-		cout<< list->Disciplina<<endl;
 		return list;
 	}
 	else
-		cout<<"Could not open the file\n";
+		cout<<"Não foi possível abrir o arquívo\n";
 }
 
 void displaymenu()
@@ -97,12 +94,145 @@ void displaymenu()
 	cout<<"===================================================== \n";
 	cout<<" 1.Ler dados\n";
 	cout<<" 2.Exibir dados\n";
+	cout<<" 3.livros brasileiros\n";
+	cout<<" 4.livro mais velho\n";	
+	cout<<" 5.Buscar por Ano\n";
+	cout<<" 6.Buscar por Palavra\n";
+	cout<<" 7.Buscar por Matéria\n";
 	cout<<" 8.Encerrar \n";
 }
 
-void EscolhaDois(Node *list)
+void OldestBook(Node *list)
 {
-	PrintListInfo(list);
+	Node *oldest = list;
+	Node *current = list;
+	
+	while (current != NULL)
+	{
+		if (current->Ano < oldest->Ano)
+		{
+			oldest = current;
+		}
+		current = current->next;
+	}	
+	cout<< oldest->Titulo<<" "<<oldest->Ano<<endl;
+}
+
+void BrazilianBooks(Node *list)
+{
+	Node *current = list;
+	string BrasilISBN = "978-85";
+	int cont = 0;
+
+	while (current != NULL)
+	{
+		if (current->ISBN.find(BrasilISBN) != std::string::npos) {
+			cout<<current->Titulo;
+			cont++;
+		}
+		current = current->next;
+	}
+	if (cont == 0)
+		cout<<"Não há livros brasileiros\n";
+	else 
+		cout<<"\n";
+		cout<<"Existem "<<cont<<" livros brasileiros\n";
+		cout<<"Isso representa "<<(cont*100)/Size(list)<<"% dos livros\n";
+}
+
+void searchByYear(Node *list)
+{
+	string year;
+	cout<<"Digite o ano: ";
+	cin>>year;
+	Node *current = list;
+	int cont = 0;
+	while (current != NULL)
+	{
+		if (current->Ano == year)
+		{
+			cout<<current->Titulo<<" "<<current->Ano<<endl;
+			cont++;
+		}
+		current = current->next;
+	}
+	if (cont == 0)
+		cout<<"Não há livros com o ano "<<year<<endl;
+	else 
+		cout<<"\n";
+		cout<<"Existem "<<cont<<" livros com o ano "<<year<<endl;
+		cout<<"Isso representa "<<(cont*100)/Size(list)<<"% dos livros\n";
+}
+
+void searchByWord(Node *list)
+{
+	string word;
+	cout<<"Digite a palavra: ";
+	cin>>word;
+	Node *current = list;
+	int cont = 0;
+	while (current != NULL)
+	{
+		if (current->Titulo.find(word) != std::string::npos)
+		{
+			cout<<current->Titulo<<" "<<current->Ano<<endl;
+			cont++;
+		}
+		current = current->next;
+	}
+	if (cont == 0)
+		cout<<"Não há livros com a palavra "<<word<<endl;
+	else 
+		cout<<"\n";
+		cout<<"Existem "<<cont<<" livros com a palavra "<<word<<endl;
+		cout<<"Isso representa "<<(cont*100)/Size(list)<<"% dos livros\n";
+}
+
+void subjectSearch(Node* list){
+  Node *current = list;
+  string subject;
+  int opcao=0,cont=0;
+  bool flagInvalido=false;
+
+
+  
+	do{  
+
+		cout<<"\nMateria da Terceira Etapa:\n 1.Banco de Dados\n 2.Estrutura de Dados\n 3.Modelagem Matematica\n 4.Organizacao de Computadores\n 5.Projeto e Analise de Algoritmos I\n\nSelecione a materia que voce deseja visualizar:";
+		cin>>opcao;
+
+		switch (opcao){
+			case 1:
+			subject="BANCO";
+			break;
+			case 2:
+			subject="ESTRUTURA";
+			break;
+			case 3:
+			subject="MODELAGEM";
+			break;
+			case 4:
+			subject="ORGANIZAÇÃO";
+			break;
+			case 5:
+			subject="PROJETO";
+			break;
+			default:
+			cout<<"Opcao invalida";
+			break;
+		}
+	} while (opcao<1 || opcao>5);
+  
+	while (current != NULL){
+		if(current->Disciplina.find(subject) != std::string::npos){
+			cout<<current->Titulo<<"\n";
+			cont++;
+    	}
+    current=current->next;
+    }
+
+  cout<<"Existem "<<cont<<" livros dessa disciplina\n";
+
 }
 
 int main()
@@ -116,26 +246,38 @@ int main()
 
 	displaymenu();
 
-	do
-	{ 
-		cout<<"Digite sua escolha(1-5):";
+	do{ 
+		cout<<"Digite sua escolha(1-8):";
 		cin>>yourchoice;
 		
-	switch (yourchoice)
-	{
-		case 1:
-			list = ReadFile(list);
-			break;
-		case 2:
-			EscolhaDois(list);
-			break;
-		case 8:
-			cout<< "VLW IRMAO \n";
-			break;
-		default: cout<<"invalid"; break;
-	}
+		switch (yourchoice)
+		{
+			case 1:
+				list = ReadFile(list);
+				break;
+			case 2:
+				PrintListInfo(list);
+				break;
+			case 3:
+				BrazilianBooks(list);
+				break;
+			case 4:
+				OldestBook(list);
+				break;
+			case 5:
+				searchByYear(list);
+				break;
+			case 6:
+				searchByWord(list);
+				break;
+			case 7:
+				subjectSearch(list);
+				break;
+			case 8:
+				cout<<"Encerrando o programa...\n";
+				break;
+			default: cout<<"Escolha inválida"; break;
+		}
 	} while (yourchoice != 8);
 	
-
-
 }
